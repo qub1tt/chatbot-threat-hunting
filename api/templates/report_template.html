@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_title }}</title>
+    <style>
+        body {
+            font-family: 'Cambria', 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #1a237e; /* Dark blue for headings */
+            page-break-after: avoid;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+        h2 {
+            font-size: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        h3 {
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p, li {
+            font-size: 20px;
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+        .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+        .technical-analysis p {
+            margin-bottom: 15px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            page-break-inside: avoid;
+        }
+        .rule-block {
+            margin-bottom: 15px;
+            border-left: 3px solid #1a237e;
+            padding-left: 10px;
+        }
+        .rule-type {
+            font-weight: bold;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ report_title }}</h1>
+
+    <div class="section">
+        <h2>I. Event Summary</h2>
+        <p>{{ data.eventSummary | replace('\\n', '\n') | replace('\n', '<br>') | safe }}</p>
+    </div>
+
+    <div class="section">
+        <h2>II. Technical Analysis</h2>
+        <div class="technical-analysis">
+            {% set technical_text = data.technicalAnalysis | replace('\\\\n\\\\n', '||PARAGRAPH_BREAK||') | replace('\\n\\n', '||PARAGRAPH_BREAK||') | replace('\n\n', '||PARAGRAPH_BREAK||') | replace('\\n', '\n') | replace('\n', '<br>') %}
+            {% for paragraph in technical_text.split('||PARAGRAPH_BREAK||') %}
+                {% if paragraph.strip() %}
+                    <p>{{ paragraph | safe }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>III. Defensive Rules</h2>
+        <p>{{ data.defensiveRules.description | replace('\\n', '\n') | replace('\n', '<br>') | safe }}</p>
+        {% if data.defensiveRules.rules and data.defensiveRules.rules|length > 0 %}
+            {% for rule in data.defensiveRules.rules %}
+                <div class="rule-block">
+                    <p class="rule-type">{{ rule.type | capitalize }} Rule:</p>
+                    {% if rule.description %}
+                        <p><em>{{ rule.description }}</em></p>
+                    {% endif %}
+                    <pre>{{ rule.content }}</pre>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No specific rules were generated for this event.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>IV. System Remediation Recommendations</h2>
+        <p>{{ data.systemRemediation | replace('\\n', '\n') | replace('\n', '<br>') | safe }}</p>
+    </div>
+
+    {% if data.mitreAttackTable and data.mitreAttackTable|length > 0 %}
+    <div class="section">
+        <h2>V. MITRE ATT&CK Techniques</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr style="background-color: #f8f9fa;">
+                    <th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Stage</th>
+                    <th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Technique</th>
+                    <th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Code</th>
+                    <th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for technique in data.mitreAttackTable %}
+                <tr style="{% if loop.index0 % 2 == 1 %}background-color: #f8f9fa;{% endif %}">
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">
+                        <span style="background-color: #e3f2fd; color: #1976d2; padding: 2px 6px; border-radius: 12px; font-size: 11px; font-weight: 500;">
+                            {{ technique.stage }}
+                        </span>
+                    </td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px; font-weight: 500;">{{ technique.techniqueName }}</td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">
+                        <code style="background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: monospace; font-size: 11px;">
+                            {{ technique.techniqueCode }}
+                        </code>
+                    </td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">{{ technique.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</body>
+</html> 
