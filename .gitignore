@@ -35,3 +35,6 @@ siemguardian_env/
 
 # Database files
 *.db
+
+# Vector database store
+chroma_db_store/
