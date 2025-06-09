@@ -1,16 +1,16 @@
-# SIEMGuardian AI
+# SageHunt
 
-SIEMGuardian AI is an AI-powered threat hunting assistant that helps security analysts create Sigma rules and convert them to EQL for Elasticsearch SIEM. This project integrates AI capabilities with SIEM systems for enhanced threat detection.
+SageHunt is an AI-powered threat hunting assistant that helps security analysts create Sigma rules and convert them to EQL for Elasticsearch SIEM. This project integrates AI capabilities with SIEM systems for enhanced threat detection.
 
 ## Project Overview
 
-SIEMGuardian AI helps security teams by:
+SageHunt helps security teams by:
 - Converting natural language descriptions into formal Sigma detection rules
 - Translating Sigma rules to Elasticsearch Query Language (EQL) for ELK SIEM
 - Providing an intuitive interface for security analysts to leverage AI in threat hunting
 - Storing and managing detection rules for future reference
 
-The name "SIEMGuardian AI" represents the tool's role in enhancing SIEM capabilities with artificial intelligence to guard against threats.
+The name "SageHunt" represents the tool's role in enhancing SIEM capabilities with artificial intelligence to guard against threats.
 
 ## Features
 
